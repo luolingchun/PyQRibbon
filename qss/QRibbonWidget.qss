@@ -1,0 +1,77 @@
+/*ribbon*/
+QRibbonWidget {
+    border: 0px;
+    margin: 0px;
+    background-color: rgb(240, 240, 240);
+}
+
+/*Button min max close*/
+TitleButton {
+    background-color: rgba(255, 255, 255, 0);
+    border: 0px;
+    min-width: 45px;
+    min-height: 30px;
+}
+
+TitleButton:hover {
+    background-color: #D0D0D1;
+    border: 0px;
+}
+
+TitleButton#ButtonClose:hover {
+    background-color: #D32424;
+    color: white;
+    border: 0px;
+}
+
+/*Button TitleWidget*/
+TitleWidget {
+    background-color: rgba(255, 255, 255, 0);
+    border: 0px;
+    min-width: 25px;
+    min-height: 30px;
+}
+
+TitleWidget:hover {
+    background-color: #D0D0D1;
+    border: 0px;
+}
+
+
+/*TabMenuBar*/
+TabMenuBar {
+    border: 0px;
+    min-height: 125px;
+}
+
+TabMenuBar:pane {
+    border: 0px;
+    background-color: #ffffff;
+}
+
+
+TabBar::tab {
+    min-width: 50px;
+    min-height: 30px;
+}
+
+TabBar::tab:selected {
+    border: 0px;
+    background-color: #ffffff;
+}
+
+TabBar::tab:selected:hover {
+    border: 0px;
+    background-color: #ffffff;
+}
+
+TabBar::tab:!selected {
+    border: 0px;
+    margin: 0px;
+    background-color: rgb(240, 240, 240);
+}
+
+TabBar::tab:hover {
+    border: 0px;
+    background-color: #D0D0D1;
+}
