@@ -6,6 +6,7 @@
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal
 from PyQt5.QtWidgets import QToolBar, QMainWindow
 from .widgets import _QRibbonWidget
+from . import icons_rc
 import os
 
 
@@ -15,6 +16,7 @@ class QRibbonWidget(QToolBar):
         self._ribbonwindow = parent
         self.setStyleSheet(open(os.path.join(os.path.dirname(__file__), 'qss/QRibbonWidget.qss')).read())
         self._init()
+        self.setMouseTracking(True)
 
     def _init(self):
         if not isinstance(self._ribbonwindow, QRibbonWindow):
@@ -33,7 +35,7 @@ class QRibbonWidget(QToolBar):
 
     @property
     def tabmenu_bar(self):
-        return self._ribbon_widget.tabmenu_bar
+        return self._ribbon_widget.menu_bar
 
 
 class QRibbonWindow(QMainWindow):
@@ -49,8 +51,11 @@ class QRibbonWindow(QMainWindow):
         self._start_point = None
         self.setMouseTracking(True)
         self.setContextMenuPolicy(Qt.NoContextMenu)
-        self.setWindowFlags(
-            Qt.Window | Qt.FramelessWindowHint | Qt.WindowSystemMenuHint | Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
+        self.setWindowFlags(Qt.Window |
+                            Qt.FramelessWindowHint |
+                            Qt.WindowSystemMenuHint |
+                            Qt.WindowMinMaxButtonsHint |
+                            Qt.WindowCloseButtonHint)
 
     def mousePressEvent(self, event):
         self._start_point = event.globalPos()
@@ -82,10 +87,7 @@ class QRibbonWindow(QMainWindow):
             event.accept()
 
     def mouseMoveEvent(self, event):
-        if self.isMaximized():
-            # 最大化时什么也不做
-            return
-        elif event.pos() in self._bottom_rect:
+        if event.pos() in self._bottom_rect:
             # 下
             self.setCursor(Qt.SizeVerCursor)
         elif event.pos() in self._left_rect:
@@ -103,9 +105,12 @@ class QRibbonWindow(QMainWindow):
         else:
             self.setCursor(Qt.ArrowCursor)
 
-        if not self._start_point:
+        if self.isMaximized():
+            # 最大化时什么也不做
             return
 
+        if not self._start_point:
+            return
         elif Qt.LeftButton and self._bottom_drag:
             # 下
             self.resize(self.width(), event.pos().y())

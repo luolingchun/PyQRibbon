@@ -2,14 +2,25 @@
 # @Time    : 2019/1/25 13:15
 # @Author  : llc
 # @File    : widgets.py
-from PyQt5.QtCore import Qt
+
+from PyQt5.QtCore import Qt, QSize, QPropertyAnimation, pyqtProperty
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel, QHBoxLayout, QPushButton, QTabWidget, QTabBar
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel, QHBoxLayout, QPushButton, QTabBar, QTabWidget, QGridLayout, \
+    QFrame, QSpacerItem
 
 
 class BaseWidget(QWidget):
     def __init__(self, *args):
         super(BaseWidget, self).__init__(*args)
+        self.setMouseTracking(True)
+
+
+class CornerButton(QPushButton):
+    def __init__(self, *args):
+        super(CornerButton, self).__init__(*args)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        self.setIconSize(QSize(10, 10))
+        self.setFixedSize(10, 10)
 
 
 class TitleButton(QPushButton):
@@ -18,16 +29,32 @@ class TitleButton(QPushButton):
         _font = QFont("Webdings")
         _font.setPointSize(12)
         self.setFont(_font)
+        self.setMinimumSize(45, 30)
+        self.setMouseTracking(True)
 
 
 class TitleWidget(QPushButton):
     def __init__(self, *args):
         super(TitleWidget, self).__init__(*args)
+        self.setMinimumSize(25, 30)
+        self.setMouseTracking(True)
+
+
+class MenuWidget(QWidget):
+    def __init__(self, *args):
+        super(MenuWidget, self).__init__(*args)
+        self.setMouseTracking(True)
+
+    def _set_height(self, height):
+        self.setFixedHeight(height)
+
+    _height = pyqtProperty(int, fset=_set_height)
 
 
 class TabBar(QTabBar):
     def __init__(self, *args):
         super(TabBar, self).__init__(*args)
+        self.setMouseTracking(True)
 
 
 class TitleBar(QWidget):
@@ -37,17 +64,21 @@ class TitleBar(QWidget):
         self._title = 'no title'
 
         self._init_ui()
+        self.setMouseTracking(True)
 
         # close
-        self.button_close = TitleButton('r')
+        self.button_close = TitleButton()
+        self.button_close.setIcon(QIcon(':icons/images/close.png'))
         self.button_close.setObjectName('ButtonClose')
         self._r_hl.insertWidget(0, self.button_close)
         # max
-        self.button_max = TitleButton('1')
+        self.button_max = TitleButton()
+        self.button_max.setIcon(QIcon(':icons/images/max1.png'))
         self.button_max.setObjectName('ButtonMax')
         self._r_hl.insertWidget(0, self.button_max)
         # min
-        self.button_min = TitleButton('0')
+        self.button_min = TitleButton()
+        self.button_min.setIcon(QIcon(':icons/images/min.png'))
         self.button_min.setObjectName('ButtonMin')
         self._r_hl.insertWidget(0, self.button_min)
 
@@ -88,17 +119,98 @@ class TitleBar(QWidget):
             self._r_hl.insertWidget(0, widget)
 
 
-class TabMenuBar(QTabWidget):
+class MenuBar(QTabWidget):
     def __init__(self, parent=None):
-        super(TabMenuBar, self).__init__(parent)
-        _tab_bar = TabBar()
-        self.setTabBar(_tab_bar)
+        super(MenuBar, self).__init__(parent)
 
-    def add_tab(self, p_str):
-        _tab = BaseWidget()
-        self.addTab(_tab, p_str)
+        tabbar = TabBar(parent)
+        self.setTabBar(tabbar)
+        self._init_ui()
+        self.setMinimumHeight(125)
+        self.setMouseTracking(True)
+
+    def _set_height(self, height):
+        self.setFixedHeight(height)
+
+    _height = pyqtProperty(int, fset=_set_height)
+
+    def _init_ui(self):
+        self._drop = False
+        self._corner = CornerButton()
+        self._corner.setIcon(QIcon(':/icons/images/pull-up.png'))
+        self.setCornerWidget(self._corner)
+        self._corner.clicked.connect(self._corner_clicked)
+        self.currentChanged.connect(self._current_changed)
+
+    def _corner_clicked(self):
+        self._ani = QPropertyAnimation(self, b'_height')
+        self._ani.setDuration(500)
+
+        if self._drop:
+            self._corner.setIcon(QIcon(':/icons/images/pull-up.png'))
+            self._drop = False
+            self._ani.setStartValue(30)
+            self._ani.setEndValue(125)
+        else:
+            self._corner.setIcon(QIcon(':/icons/images/drop-down.png'))
+            self._drop = True
+            self._ani.setStartValue(125)
+            self._ani.setEndValue(30)
+        self._ani.start()
+
+    def _current_changed(self, index):
+        tab_text = self.tabText(index)
+        menu = self.findChild(MenuWidget, tab_text)
+        self._ani1 = QPropertyAnimation(menu, b'_height')
+        self._ani1.setDuration(500)
+        self._ani1.setStartValue(0)
+        self._ani1.setEndValue(95)
+        self._ani1.start()
+
+    def add_menu(self, p_str):
+        p_str = "  {p_str}  ".format(p_str=p_str)
+        menu = MenuWidget()
+        menu.setObjectName(p_str)
+        self.addTab(menu, p_str)
+        self._hl = QHBoxLayout(menu)
+        self._hl.setObjectName(p_str)
+        self._hl.setContentsMargins(0, 0, 0, 0)
+        self._hl.setSpacing(0)
+        hs = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self._hl.addItem(hs)
+        return menu
+
+    def add_group(self, p_str, menu):
+        group = GroupWidget(p_str, menu)
+        group.setObjectName('group')
+        insert_index = len(menu.findChildren(GroupWidget, 'group')) - 1
+        self._hl.insertWidget(insert_index, group)
+        return group
 
 
 class GroupWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, p_str, parent=None):
         super(GroupWidget, self).__init__(parent)
+        self._title = p_str
+        self._init_ui()
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Minimum)
+        self.setMouseTracking(True)
+
+    def _init_ui(self):
+        self._gl = QGridLayout(self)
+        self._gl.setContentsMargins(3, 3, 3, 3)
+        self._gl.setSpacing(1)
+        label = QLabel(self._title)
+        label.setAlignment(Qt.AlignBottom | Qt.AlignHCenter)
+        label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        self._gl.addWidget(label, 1, 0, 1, 1)
+        line = QFrame(self)
+        line.setFrameShape(QFrame.VLine)
+        line.setFrameShadow(QFrame.Raised)
+        self._gl.addWidget(line, 0, 2, 2, 1)
+        self.corner = CornerButton()
+        self.corner.setIcon(QIcon(':icons/images/corner.png'))
+        self._gl.addWidget(self.corner, 1, 1, 1, 1)
+
+    def add_widget(self, widget):
+        self._gl.addWidget(widget, 0, 0, 1, 2)

@@ -9,8 +9,6 @@ QRibbonWidget {
 TitleButton {
     background-color: rgba(255, 255, 255, 0);
     border: 0px;
-    min-width: 45px;
-    min-height: 30px;
 }
 
 TitleButton:hover {
@@ -28,8 +26,6 @@ TitleButton#ButtonClose:hover {
 TitleWidget {
     background-color: rgba(255, 255, 255, 0);
     border: 0px;
-    min-width: 25px;
-    min-height: 30px;
 }
 
 TitleWidget:hover {
@@ -39,12 +35,11 @@ TitleWidget:hover {
 
 
 /*TabMenuBar*/
-TabMenuBar {
+MenuBar {
     border: 0px;
-    min-height: 125px;
 }
 
-TabMenuBar:pane {
+MenuBar:pane {
     border: 0px;
     background-color: #ffffff;
 }
@@ -74,4 +69,20 @@ TabBar::tab:!selected {
 TabBar::tab:hover {
     border: 0px;
     background-color: #D0D0D1;
+}
+
+/*CornerButton*/
+CornerButton {
+    background-color: rgba(255, 255, 255, 0);
+    border: 0px;
+}
+
+CornerButton:hover {
+    background-color: #D0D0D1;
+    border: 0px;
+}
+
+CornerButton:pressed{
+    background-color: #bfbfbf;
+    border: 0px;
 }
