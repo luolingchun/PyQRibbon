@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2019/1/25 13:15
 # @Author  : llc
-# @File    : widgets.py
+# @File    : widget_list.py
 
 from PyQt5.QtCore import Qt, QSize, QPropertyAnimation, pyqtProperty
 from PyQt5.QtGui import QFont, QIcon
@@ -61,24 +61,26 @@ class TitleBar(QWidget):
     def __init__(self, parent=None):
         super(TitleBar, self).__init__(parent)
 
-        self._title = 'no title'
+        self.title = 'no title'
 
         self._init_ui()
         self.setMouseTracking(True)
 
+        font = QFont('Webdings')
+
         # close
-        self.button_close = TitleButton()
-        self.button_close.setIcon(QIcon(':icons/images/close.png'))
+        self.button_close = TitleButton('r')
+        self.button_close.setFont(font)
         self.button_close.setObjectName('ButtonClose')
         self._r_hl.insertWidget(0, self.button_close)
         # max
-        self.button_max = TitleButton()
-        self.button_max.setIcon(QIcon(':icons/images/max1.png'))
+        self.button_max = TitleButton('1')
+        self.button_max.setFont(font)
         self.button_max.setObjectName('ButtonMax')
         self._r_hl.insertWidget(0, self.button_max)
         # min
-        self.button_min = TitleButton()
-        self.button_min.setIcon(QIcon(':icons/images/min.png'))
+        self.button_min = TitleButton('0')
+        self.button_min.setFont(font)
         self.button_min.setObjectName('ButtonMin')
         self._r_hl.insertWidget(0, self.button_min)
 
@@ -92,7 +94,7 @@ class TitleBar(QWidget):
         self._l_hl.setSpacing(0)
         hl.addWidget(l_widget)
         hl.setContentsMargins(0, 0, 0, 0)
-        self._label_title = QLabel(self._title)
+        self._label_title = QLabel(self.title)
         self._label_title.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self._label_title.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         hl.addWidget(self._label_title)
@@ -105,8 +107,8 @@ class TitleBar(QWidget):
     def set_title(self, title):
         if not isinstance(title, str):
             raise TypeError("'title' requires 'str' type.")
-        self._title = title
-        self._label_title.setText(self._title)
+        self.title = title
+        self._label_title.setText(self.title)
 
     def add_widget(self, icon, left=True):
         if not isinstance(icon, str):
@@ -135,10 +137,13 @@ class MenuBar(QTabWidget):
     _height = pyqtProperty(int, fset=_set_height)
 
     def _init_ui(self):
+        font = QFont('Webdings')
+
         self._drop = False
-        self._corner = CornerButton()
-        self._corner.setIcon(QIcon(':/icons/images/pull-up.png'))
-        self.setCornerWidget(self._corner)
+        self._corner = CornerButton('6')
+        self._corner.setObjectName('BUttonCorner')
+        self._corner.setFont(font)
+        self.setCornerWidget(self._corner, Qt.BottomRightCorner)
         self._corner.clicked.connect(self._corner_clicked)
         self.currentChanged.connect(self._current_changed)
 
@@ -147,12 +152,12 @@ class MenuBar(QTabWidget):
         self._ani.setDuration(500)
 
         if self._drop:
-            self._corner.setIcon(QIcon(':/icons/images/pull-up.png'))
+            self._corner.setText('5')
             self._drop = False
             self._ani.setStartValue(30)
             self._ani.setEndValue(125)
         else:
-            self._corner.setIcon(QIcon(':/icons/images/drop-down.png'))
+            self._corner.setText('6')
             self._drop = True
             self._ani.setStartValue(125)
             self._ani.setEndValue(30)
@@ -197,6 +202,8 @@ class GroupWidget(QWidget):
         self.setMouseTracking(True)
 
     def _init_ui(self):
+        font = QFont('Wingdings 3')
+
         self._gl = QGridLayout(self)
         self._gl.setContentsMargins(3, 3, 3, 3)
         self._gl.setSpacing(1)
@@ -208,8 +215,9 @@ class GroupWidget(QWidget):
         line.setFrameShape(QFrame.VLine)
         line.setFrameShadow(QFrame.Raised)
         self._gl.addWidget(line, 0, 2, 2, 1)
-        self.corner = CornerButton()
-        self.corner.setIcon(QIcon(':icons/images/corner.png'))
+        self.corner = CornerButton('y')
+        self.corner.setObjectName('BUttonCorner')
+        self.corner.setFont(font)
         self._gl.addWidget(self.corner, 1, 1, 1, 1)
 
     def add_widget(self, widget):
