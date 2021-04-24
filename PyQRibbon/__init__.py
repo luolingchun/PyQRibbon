@@ -4,50 +4,135 @@
 # @File    : __init__.py
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QToolBar
-from .widgets import QRibbonWidget
-from .widgets.frameless_window import FramelessWindow
-import os
+from PyQt5.QtWidgets import QWidget, QToolBar
+
+from PyQRibbon.theme import default
+from PyQRibbon.widgets.framelessWindow import FramelessWindow
+from PyQRibbon.widgets.ribbonWidget import QRibbonWidget, QLabel
 
 
-class QRibbonToolBar(QToolBar):
-    def __init__(self, parent=None):
-        super(QRibbonToolBar, self).__init__(parent)
-        self.parent = parent
+class QRibbonWindow(FramelessWindow):
+    def __init__(self, style='default'):
+        super(QRibbonWindow, self).__init__()
+        self.style = style
+        self.setObjectName('QRibbonWindow')
 
-        if not isinstance(self.parent, FramelessWindow):
-            raise TypeError("__init__(self, parent=None) 'parent' requires 'FramelessWindow' type.")
+        # 设置样式
+        if self.style == 'default':
+            self.setStyleSheet(default)
+        # 添加工具栏
+        toolBar = QToolBar(self)
+        toolBar.setMouseTracking(True)
+        self.ribbonWidget = QRibbonWidget(toolBar)
+        toolBar.addWidget(self.ribbonWidget)
+        toolBar.setAllowedAreas(Qt.NoToolBarArea)
+        toolBar.setMovable(False)
+        toolBar.setFloatable(False)
+        self.addToolBar(toolBar)
+        # 添加中心控件
+        self.centralWidget = QWidget(self)
+        self.centralWidget.setMouseTracking(True)
+        self.centralWidget.setObjectName("centralWidget")
+        self.setCentralWidget(self.centralWidget)
+        # 安装时间过滤器
+        self.installEventFilter(self)
+        self.ribbonWidget.groupPanel.installEventFilter(self)
+        self.minButton.installEventFilter(self)
+        self.maxButton.installEventFilter(self)
+        self.closeButton.installEventFilter(self)
+        self.fileButton.installEventFilter(self)
+        # 最小化、最大化、关闭按钮事件
+        self.minButton.clicked.connect(self.showMinimized)
+        self.maxButton.clicked.connect(self.toggle_max)
+        self.closeButton.clicked.connect(self.close)
 
-        self.setStyleSheet(open(os.path.join(os.path.dirname(__file__), 'qss/QRibbonWidget.qss')).read())
+    def addLeftWidget(self, widget: QWidget):
+        """在标题栏左侧添加控件"""
+        self.ribbonWidget.titleWidget.addLeftWidget(widget)
 
-        self.ribbon_widget = QRibbonWidget(self)
-        self.addWidget(self.ribbon_widget)
-        self.setAllowedAreas(Qt.NoToolBarArea)
-        self.setMovable(False)
-        self.setFloatable(False)
-
-        self.setMouseTracking(True)
-
-        self.add_widget = self.ribbon_widget.title_bar.add_widget
-        self.add_menu = self.ribbon_widget.menu_bar.add_menu
-        self.add_group = self.ribbon_widget.menu_bar.add_group
-
-        self.ribbon_widget.title_bar.button_min.clicked.connect(self.parent.showMinimized)
-        self.ribbon_widget.title_bar.button_max.clicked.connect(self.show_max)
-        self.ribbon_widget.title_bar.button_close.clicked.connect(self.parent.close)
+    def addRightWidget(self, widget: QWidget):
+        """在标题栏右侧添加控件"""
+        self.ribbonWidget.titleWidget.addRightWidget(widget)
 
     @property
     def title(self):
-        return self.ribbon_widget.title_bar.title
+        """标题文字"""
+        return self.ribbonWidget.titleWidget.title
 
     @title.setter
     def title(self, title):
-        self.ribbon_widget.title_bar.set_title(title)
+        """设置标题文字"""
+        self.ribbonWidget.titleWidget.title = title
 
-    def show_max(self):
-        if self.ribbon_widget.title_bar.button_max.text() == '1':
-            self.ribbon_widget.title_bar.button_max.setText('2')
-            self.parent.showMaximized()
+    @property
+    def minButton(self):
+        """最小化按钮"""
+        return self.ribbonWidget.titleWidget.minButton
+
+    @property
+    def maxButton(self):
+        """最大化按钮"""
+        return self.ribbonWidget.titleWidget.maxButton
+
+    @property
+    def closeButton(self):
+        """关闭按钮"""
+        return self.ribbonWidget.titleWidget.closeButton
+
+    @property
+    def fileButton(self):
+        """文件按钮"""
+        return self.ribbonWidget.groupPanel.fileButton
+
+    def addGroup(self, name: str, widget: QWidget):
+        """
+        添加分组
+        :param name: 分组名称
+        :param widget: 分组控件
+        :return:
+        """
+        widget.setMouseTracking(True)
+        self.ribbonWidget.groupPanel.addTab(widget, name)
+
+    def currentIndex(self):
+        """当前组索引"""
+        return self.ribbonWidget.groupPanel.currentIndex()
+
+    def removeGroup(self, index):
+        """根据索引删除组"""
+        self.ribbonWidget.groupPanel.removeTab(index)
+
+    def mouseDoubleClickEvent(self, event):
+        """双击全屏"""
+        super(QRibbonWindow, self).mouseDoubleClickEvent(event)
+        self.toggle_max()
+
+    def toggle_max(self):
+        """切换最大化"""
+        if self.maxButton.text() == '🗖':
+            self.maxButton.setText('🗗')
+            self.showMaximized()
         else:
-            self.ribbon_widget.title_bar.button_max.setText('1')
-            self.parent.showNormal()
+            self.maxButton.setText('🗖')
+            self.showNormal()
+
+
+if __name__ == '__main__':
+    from PyQt5.QtWidgets import QApplication
+
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    app = QApplication([])
+    # 初始化主窗口
+    form = QRibbonWindow()
+    form.title = '这是一个标题'
+    form.addGroup('开始', QLabel('sss'))
+    form.addGroup('设计', QLabel('ddd'))
+    form.resize(800, 600)
+    form.show()
+
+    from pyqss import Qss
+
+    qss = Qss(form)
+    qss.show()
+
+    app.exec_()

@@ -1,0 +1,100 @@
+
+#centralWidget{
+	background-color: white;
+	margin-left: 3px;
+	margin-right: 3px;
+	margin-bottom: 3px;
+}
+
+QRibbonWidget{
+	border: 0px;
+	background-color: white;
+}
+/*标题栏背景色*/
+QTitleWidget{
+	border: 0px;
+	background-color: white;
+}
+/*标题文本*/
+QTitleLabel{
+	font-family: "微软雅黑";
+	font-size: 12px;
+}
+/*标题按钮*/
+QTitleButton{
+	border: 0px;
+	font-size: 16px;
+	width: 47px;
+	height: 29px;
+	background-color: white;
+}
+/*标题按钮：鼠标悬停*/
+QTitleButton:hover{
+	background-color:rgb(227, 236, 250);
+}
+/*关闭按钮：鼠标悬停*/
+#closeButton:hover{
+	color: white;
+	background-color: rgb(232, 17, 35);
+}
+
+/*文件按钮*/
+QFileButton{
+	border: 1px solid rgb(43, 87, 154);
+	width: 60px;
+	height: 30px;
+	margin-right: 2px;
+	font-family: "微软雅黑";
+	font-size: 12px;
+	color:white;
+	background-color: rgb(43, 87, 154);
+}
+
+QFileButton:hover{
+	background-color: rgb(18, 64, 120);
+}
+
+QGroupPanel{
+	border: 0px;
+	min-height: 125px;
+}
+
+QGroupPanel:pane{
+	top: -1px;
+	border-top: 1px solid rgb(200, 200, 200);
+	border-bottom: 1px solid rgb(200, 200, 200);
+	background-color: rgb(255, 255, 255);
+}
+
+QToolBar{
+	border: 1px;
+	margin-top: 3px;
+	margin-left: 3px;
+	margin-right: 3px;
+	spacing: 1px;
+	background-color: white;
+}
+
+QRibbonWidget{
+	border: 0px;
+}
+
+QTabBar::tab{
+	width: 50px;
+	height: 30px;
+	font-family: "微软雅黑";
+	font-size: 12px;
+	background-color: white;
+}
+
+QTabBar::tab:hover{
+	color: rgb(43, 87, 154);
+}
+
+
+QTabBar::tab:selected{
+	border-left: 1px solid rgb(200, 200, 200);
+	border-top: 1px solid rgb(200, 200, 200);
+	border-right: 1px solid rgb(200, 200, 200);
+	color: rgb(43, 87, 154);
+}

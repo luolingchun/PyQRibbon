@@ -1,0 +1,3 @@
+include pyqss/i18n/*
+include pyqss/qss/*
+include examples/*
