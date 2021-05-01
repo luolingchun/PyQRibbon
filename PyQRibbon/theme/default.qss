@@ -1,11 +1,12 @@
 
+/*中心控件*/
 #centralWidget{
 	background-color: white;
 	margin-left: 3px;
 	margin-right: 3px;
 	margin-bottom: 3px;
 }
-
+/*整个ribbon组件*/
 QRibbonWidget{
 	border: 0px;
 	background-color: white;
@@ -49,23 +50,23 @@ QFileButton{
 	color:white;
 	background-color: rgb(43, 87, 154);
 }
-
+/*文件按钮*/
 QFileButton:hover{
 	background-color: rgb(18, 64, 120);
 }
-
-QGroupPanel{
+/*菜单控件*/
+QTabPanel{
 	border: 0px;
 	min-height: 125px;
 }
-
-QGroupPanel:pane{
+/*菜单面板*/
+QTabPanel:pane{
 	top: -1px;
 	border-top: 1px solid rgb(200, 200, 200);
 	border-bottom: 1px solid rgb(200, 200, 200);
 	background-color: rgb(255, 255, 255);
 }
-
+/*工具栏*/
 QToolBar{
 	border: 1px;
 	margin-top: 3px;
@@ -74,27 +75,40 @@ QToolBar{
 	spacing: 1px;
 	background-color: white;
 }
-
-QRibbonWidget{
-	border: 0px;
-}
-
-QTabBar::tab{
+/*标签*/
+QTabPanel QTabBar::tab{
 	width: 50px;
 	height: 30px;
 	font-family: "微软雅黑";
 	font-size: 12px;
 	background-color: white;
 }
-
-QTabBar::tab:hover{
+/*标签鼠标悬停*/
+QTabPanel  QTabBar::tab:hover{
 	color: rgb(43, 87, 154);
 }
-
-
-QTabBar::tab:selected{
+/*标签选择*/
+QTabPanel  QTabBar::tab:selected{
 	border-left: 1px solid rgb(200, 200, 200);
 	border-top: 1px solid rgb(200, 200, 200);
 	border-right: 1px solid rgb(200, 200, 200);
 	color: rgb(43, 87, 154);
+}
+/*分组右下角按钮*/
+#cornerButton{
+	border: 0px;
+	width: 16px;
+	height: 16px;
+}
+
+#cornerButton:hover{
+	background-color:rgb(227, 236, 250);
+}
+
+/*竖线*/
+#Line{
+	border: 0px;
+	background-color: rgb(200, 200, 200);
+	max-height: 90px;
+	max-width: 1px;
 }

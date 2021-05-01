@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QWidget, QToolBar
 
 from PyQRibbon.theme import default
 from PyQRibbon.widgets.framelessWindow import FramelessWindow
-from PyQRibbon.widgets.ribbonWidget import QRibbonWidget, QLabel
+from PyQRibbon.widgets.ribbonWidget import QRibbonWidget, QLabel, QTab
 
 
 class QRibbonWindow(FramelessWindow):
@@ -17,9 +17,14 @@ class QRibbonWindow(FramelessWindow):
         self.style = style
         self.setObjectName('QRibbonWindow')
 
+        self.tabs = []
+        self.groups = []
+
         # 设置样式
         if self.style == 'default':
             self.setStyleSheet(default)
+        # 去除右键菜单
+        self.setContextMenuPolicy(Qt.NoContextMenu)
         # 添加工具栏
         toolBar = QToolBar(self)
         toolBar.setMouseTracking(True)
@@ -36,7 +41,7 @@ class QRibbonWindow(FramelessWindow):
         self.setCentralWidget(self.centralWidget)
         # 安装时间过滤器
         self.installEventFilter(self)
-        self.ribbonWidget.groupPanel.installEventFilter(self)
+        self.ribbonWidget.tabPanel.installEventFilter(self)
         self.minButton.installEventFilter(self)
         self.maxButton.installEventFilter(self)
         self.closeButton.installEventFilter(self)
@@ -82,30 +87,39 @@ class QRibbonWindow(FramelessWindow):
     @property
     def fileButton(self):
         """文件按钮"""
-        return self.ribbonWidget.groupPanel.fileButton
+        return self.ribbonWidget.tabPanel.fileButton
 
-    def addGroup(self, name: str, widget: QWidget):
+    def addTab(self, name: str):
+        """添加tab"""
+        tab = QTab(self.ribbonWidget.tabPanel)
+        self.ribbonWidget.tabPanel.addTab(tab, name)
+        self.tabs.append(tab)
+        return tab
+
+    def addGroup(self, tab: QTab, name, widget, corner=False, cornerCallback=None):
         """
-        添加分组
+        向tab中添加分组
+        :param tab: 菜单标签实例，addTab返回值
         :param name: 分组名称
         :param widget: 分组控件
+        :param corner: 右下角按钮是否实现显示
+        :param cornerCallback: 右下角按钮点击回调函数
         :return:
         """
-        widget.setMouseTracking(True)
-        self.ribbonWidget.groupPanel.addTab(widget, name)
+        group = tab.addGroup(name, widget, corner, cornerCallback)
+        self.groups.append(group)
+        return group
 
     def currentIndex(self):
-        """当前组索引"""
-        return self.ribbonWidget.groupPanel.currentIndex()
-
-    def removeGroup(self, index):
-        """根据索引删除组"""
-        self.ribbonWidget.groupPanel.removeTab(index)
+        """当前tab索引"""
+        return self.ribbonWidget.tabPanel.currentIndex()
 
     def mouseDoubleClickEvent(self, event):
         """双击全屏"""
         super(QRibbonWindow, self).mouseDoubleClickEvent(event)
-        self.toggle_max()
+        # 左键
+        if event.buttons() == Qt.LeftButton:
+            self.toggle_max()
 
     def toggle_max(self):
         """切换最大化"""
@@ -125,8 +139,11 @@ if __name__ == '__main__':
     # 初始化主窗口
     form = QRibbonWindow()
     form.title = '这是一个标题'
-    form.addGroup('开始', QLabel('sss'))
-    form.addGroup('设计', QLabel('ddd'))
+    tab1 = form.addTab('开始')
+    tab1.addGroup('剪贴板', QLabel('ttt'), corner=True, cornerCallback=lambda: print(111))
+    tab1.addGroup("字体", QLabel('ddd'))
+    tab2 = form.addTab('设计')
+    tab2.addGroup("格式", QLabel('sss'))
     form.resize(800, 600)
     form.show()
 

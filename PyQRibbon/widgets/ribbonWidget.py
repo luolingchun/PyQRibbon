@@ -2,7 +2,7 @@
 # @Author  : llc
 # @Time    : 2021/4/10 16:36
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QSizePolicy, QTabWidget, QFrame
+from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QSizePolicy, QTabWidget, QFrame, QGridLayout, QSpacerItem
 
 from PyQRibbon.utils import create_layout
 
@@ -99,16 +99,78 @@ class QTitleWidget(QBaseWidget):
         self._rhl.insertWidget(0, widget)
 
 
-class QGroupPanel(QTabWidget):
+class QTabPanel(QTabWidget):
     def __init__(self, parent=None):
-        super(QGroupPanel, self).__init__(parent)
+        super(QTabPanel, self).__init__(parent)
         # 左侧文件按钮
         self.fileButton = QFileButton('文件', self)
         self.setCornerWidget(self.fileButton, corner=Qt.TopLeftCorner)
+        self.setTabBarAutoHide(True)
 
         self.setMouseTracking(True)
 
         self.currentChanged.connect(lambda: self.setStyleSheet(""))
+
+
+class QTab(QBaseWidget):
+    def __init__(self, parent=None):
+        super(QTab, self).__init__(parent)
+
+        self.__init_ui()
+
+    def __init_ui(self):
+        """水平布局，用于添加group"""
+        self.__layout = create_layout(self)
+        # 最右侧添加弹簧
+        horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.__layout.addItem(horizontalSpacer)
+
+    def addGroup(self, name, widget, corner=False, cornerCallback=None):
+        group = QGroup(name, widget, corner, cornerCallback, self)
+        # 控件个数
+        count = self.__layout.count()
+        self.__layout.insertWidget(count - 1, group)
+        # 添加竖线
+        line = QFrame(self)
+        line.setObjectName("Line")
+        line.setFrameShape(QFrame.VLine)
+        line.setFrameShadow(QFrame.Raised)
+        self.__layout.insertWidget(count, line)
+        return group
+
+
+class QGroup(QBaseWidget):
+    def __init__(self, name, widget, corner=False, cornerCallback=None, parent=None):
+        """
+        组控件
+        :param name: 名称
+        :param widget: 控件
+        :param corner: 右下角按钮是否实现显示
+        :param cornerCallback: 右下角按钮点击回调函数
+        :param parent: 父级
+        """
+        super(QGroup, self).__init__(parent)
+        self.name = name
+        self.widget = widget
+        self.corner = corner
+        self.cornerCallback = cornerCallback
+        self.__init_ui()
+
+    def __init_ui(self):
+        """网格布局"""
+        gridLayout = QGridLayout(self)
+        gridLayout.setContentsMargins(0, 0, 0, 0)
+        gridLayout.addWidget(self.widget, 0, 0, 1, 2)
+        label = QLabel(self.name, self)
+        gridLayout.addWidget(label, 1, 0, 1, 1)
+        cornerButton = QPushButton('⟓', self)
+        cornerButton.setObjectName('cornerButton')
+        cornerButton.hide()
+        gridLayout.addWidget(cornerButton, 1, 1, 1, 1)
+        if self.corner:
+            cornerButton.show()
+            if self.cornerCallback:
+                cornerButton.clicked.connect(self.cornerCallback)
 
 
 class QRibbonWidget(QFrame):
@@ -117,10 +179,10 @@ class QRibbonWidget(QFrame):
         # 标题组件
         self.titleWidget = QTitleWidget(self)
         # 分组组件
-        self.groupPanel = QGroupPanel(self)
+        self.tabPanel = QTabPanel(self)
         # 创建垂直布局
         vl = create_layout(self, direction='v')
         vl.addWidget(self.titleWidget)
-        vl.addWidget(self.groupPanel)
+        vl.addWidget(self.tabPanel)
 
         self.setMouseTracking(True)

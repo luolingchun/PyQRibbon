@@ -83,7 +83,7 @@ class FramelessWindow(QMainWindow):
     def mouseMoveEvent(self, event):
         if self.isMaximized():
             return
-            # print(event.pos())
+        # print(event.pos())
         if event.pos() in self.top_rect:
             # 上
             self.setCursor(Qt.SizeVerCursor)
@@ -175,6 +175,9 @@ class FramelessWindow(QMainWindow):
     def mouseReleaseEvent(self, event):
         if self.isMaximized():
             return
+        x, y, width, height = self.geometry().getRect()
+        if y < 0:
+            self.setGeometry(x, 1, width, height)
         self.top_drag = False
         self.bottom_drag = False
         self.left_drag = False
@@ -216,9 +219,20 @@ class FramelessWindow(QMainWindow):
         return super(FramelessWindow, self).eventFilter(obj, event)
 
     def paintEvent(self, event):
-        """由于是全透明背景窗口,重绘事件中绘制透明度为1的难以发现的边框,用于调整窗口大小"""
         super(FramelessWindow, self).paintEvent(event)
-
-        painter = QPainter(self)
-        painter.setPen(QPen(QColor(0, 255, 0, 2), 2 * self.margin))
-        painter.drawRect(self.rect())
+        if self.isMaximized():
+            # 绘制透明度为2*margin的难以发现的边框
+            painter = QPainter(self)
+            painter.setPen(QPen(QColor(255, 255, 255, 255), 2 * self.margin))
+            painter.drawRect(self.rect())
+            # 绘制1像素黑边
+            painter.setPen(QPen(QColor(255, 255, 255, 255), 1))
+            painter.drawRect(3, 3, self.width() - 6, self.height() - 6)
+        else:
+            # 绘制透明度为2*margin的难以发现的边框
+            painter = QPainter(self)
+            painter.setPen(QPen(QColor(0, 255, 0, 2), 2 * self.margin))
+            painter.drawRect(self.rect())
+            # 绘制1像素黑边
+            painter.setPen(QPen(QColor(0, 0, 0, 255), 1))
+            painter.drawRect(3, 3, self.width() - 6, self.height() - 6)
