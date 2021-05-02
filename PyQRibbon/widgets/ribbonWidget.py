@@ -156,17 +156,27 @@ class QGroup(QBaseWidget):
         self.cornerCallback = cornerCallback
         self.__init_ui()
 
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
+
     def __init_ui(self):
         """网格布局"""
-        gridLayout = QGridLayout(self)
-        gridLayout.setContentsMargins(0, 0, 0, 0)
-        gridLayout.addWidget(self.widget, 0, 0, 1, 2)
+        vl = create_layout(self, 'v')
+        vl.setContentsMargins(0, 3, 0, 3)
+        self.widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        vl.addWidget(self.widget)
+        hl = create_layout(direction='h')
+        horizontalSpacerL = QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        hl.addItem(horizontalSpacerL)
         label = QLabel(self.name, self)
-        gridLayout.addWidget(label, 1, 0, 1, 1)
+        label.setObjectName("GroupLabel")
+        hl.addWidget(label)
+        horizontalSpacerR = QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        hl.addItem(horizontalSpacerR)
         cornerButton = QPushButton('⟓', self)
         cornerButton.setObjectName('cornerButton')
         cornerButton.hide()
-        gridLayout.addWidget(cornerButton, 1, 1, 1, 1)
+        hl.addWidget(cornerButton)
+        vl.addLayout(hl)
         if self.corner:
             cornerButton.show()
             if self.cornerCallback:

@@ -112,3 +112,8 @@ QTabPanel  QTabBar::tab:selected{
 	max-height: 90px;
 	max-width: 1px;
 }
+
+#GroupLabel{
+	min-height: 16px;
+	max-height: 16px;
+}
