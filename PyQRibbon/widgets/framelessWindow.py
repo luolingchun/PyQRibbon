@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 class FramelessWindow(QMainWindow):
     resized = pyqtSignal()
-    margin = 6
+    margin = 3
 
     def __init__(self, parent=None):
         super(FramelessWindow, self).__init__(parent)
@@ -37,7 +37,7 @@ class FramelessWindow(QMainWindow):
         self.top_left_rect = []
         self.top_right_rect = []
         self.setMouseTracking(True)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        # self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowFlags(Qt.Dialog |
                             Qt.FramelessWindowHint |
                             Qt.WindowSystemMenuHint |
@@ -218,21 +218,21 @@ class FramelessWindow(QMainWindow):
 
         return super(FramelessWindow, self).eventFilter(obj, event)
 
-    def paintEvent(self, event):
-        super(FramelessWindow, self).paintEvent(event)
-        if self.isMaximized():
-            # 绘制透明度为2*margin的难以发现的边框
-            painter = QPainter(self)
-            painter.setPen(QPen(QColor(255, 255, 255, 255), 2 * self.margin))
-            painter.drawRect(self.rect())
-            # 绘制1像素黑边
-            painter.setPen(QPen(QColor(255, 255, 255, 255), 1))
-            painter.drawRect(3, 3, self.width() - 6, self.height() - 6)
-        else:
-            # 绘制透明度为2*margin的难以发现的边框
-            painter = QPainter(self)
-            painter.setPen(QPen(QColor(0, 255, 0, 2), 2 * self.margin))
-            painter.drawRect(self.rect())
-            # 绘制1像素黑边
-            painter.setPen(QPen(QColor(0, 0, 0, 255), 1))
-            painter.drawRect(3, 3, self.width() - 6, self.height() - 6)
+    # def paintEvent(self, event):
+    #     super(FramelessWindow, self).paintEvent(event)
+    #     if self.isMaximized():
+    #         # 绘制透明度为2*margin的难以发现的边框
+    #         painter = QPainter(self)
+    #         painter.setPen(QPen(QColor(255, 255, 255, 255), 2 * self.margin))
+    #         painter.drawRect(self.rect())
+    #         # 绘制1像素黑边
+    #         painter.setPen(QPen(QColor(255, 255, 255, 255), 1))
+    #         painter.drawRect(3, 3, self.width() - 6, self.height() - 6)
+    #     else:
+    #         # 绘制透明度为2*margin的难以发现的边框
+    #         painter = QPainter(self)
+    #         painter.setPen(QPen(QColor(0, 255, 0, 2), 2 * self.margin))
+    #         painter.drawRect(self.rect())
+    #         # 绘制1像素黑边
+    #         painter.setPen(QPen(QColor(0, 0, 0, 255), 1))
+    #         painter.drawRect(3, 3, self.width() - 6, self.height() - 6)

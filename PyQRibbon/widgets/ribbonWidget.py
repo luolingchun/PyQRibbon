@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author  : llc
 # @Time    : 2021/4/10 16:36
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QSizePolicy, QTabWidget, QFrame, QGridLayout, QSpacerItem
+from PyQt5.QtCore import Qt, pyqtProperty
+from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QSizePolicy, QTabWidget, QFrame, QSpacerItem
 
 from PyQRibbon.utils import create_layout
 
@@ -105,11 +105,15 @@ class QTabPanel(QTabWidget):
         # 左侧文件按钮
         self.fileButton = QFileButton('文件', self)
         self.setCornerWidget(self.fileButton, corner=Qt.TopLeftCorner)
-        self.setTabBarAutoHide(True)
 
         self.setMouseTracking(True)
 
         self.currentChanged.connect(lambda: self.setStyleSheet(""))
+
+    def _set_height(self, height):
+        self.setFixedHeight(height)
+
+    _height = pyqtProperty(int, fset=_set_height)
 
 
 class QTab(QBaseWidget):
@@ -161,7 +165,6 @@ class QGroup(QBaseWidget):
     def __init_ui(self):
         """网格布局"""
         vl = create_layout(self, 'v')
-        vl.setContentsMargins(0, 3, 0, 3)
         self.widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         vl.addWidget(self.widget)
         hl = create_layout(direction='h')

@@ -1,10 +1,12 @@
-
+QRibbonWindow{
+    background-color: white;
+}
 /*中心控件*/
 #centralWidget{
 	background-color: white;
-	margin-left: 3px;
-	margin-right: 3px;
-	margin-bottom: 3px;
+	margin-left: 2px;
+	margin-right: 2px;
+	margin-bottom: 2px;
 }
 /*整个ribbon组件*/
 QRibbonWidget{
@@ -58,6 +60,7 @@ QFileButton:hover{
 QTabPanel{
 	border: 0px;
 	min-height: 125px;
+	max-height: 125px;
 }
 /*菜单面板*/
 QTabPanel:pane{
@@ -69,9 +72,9 @@ QTabPanel:pane{
 /*工具栏*/
 QToolBar{
 	border: 1px;
-	margin-top: 3px;
-	margin-left: 3px;
-	margin-right: 3px;
+	margin-top: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
 	spacing: 1px;
 	background-color: white;
 }

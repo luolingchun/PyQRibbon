@@ -1,0 +1,26 @@
+QToolButton{
+	padding-bottom:20px;
+	border: 0px;
+	width: 60px;
+	icon-size: 32px;
+}
+
+QToolButton:hover,QToolButton:checked{
+	background:rgb(227, 236, 250);
+}
+
+QToolButton::menu-button {
+	subcontrol-origin:margin;
+	subcontrol-position: bottom center;
+	height:20px;
+	width: 100%;
+ }
+ 
+QPushButton{
+	border: 0px; 
+	width: 60px;
+}
+
+QPushButton:hover{
+	background:rgb(227, 236, 250);
+}
