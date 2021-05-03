@@ -5,11 +5,10 @@
 
 from setuptools import setup
 
-__version__ = 'v0.9.0'
+__version__ = 'v0.9.1'
 
 long_description = """
-
-
+PyQRibbon是一个实现了ribbon菜单的控件
 """
 
 setup(

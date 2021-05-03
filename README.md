@@ -1,6 +1,6 @@
 # PyQRibbon
 
-PyQRibbon实现了ribbon菜单的控件
+PyQRibbon是一个实现了ribbon菜单的控件
 
 ## 安装
 
