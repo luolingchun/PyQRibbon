@@ -102,18 +102,16 @@ class QTitleWidget(QBaseWidget):
 class QTabPanel(QTabWidget):
     def __init__(self, parent=None):
         super(QTabPanel, self).__init__(parent)
-        # 左侧文件按钮
-        self.fileButton = QFileButton('文件', self)
-        self.setCornerWidget(self.fileButton, corner=Qt.TopLeftCorner)
 
         self.setMouseTracking(True)
 
         self.currentChanged.connect(lambda: self.setStyleSheet(""))
 
-    def _set_height(self, height):
-        self.setFixedHeight(height)
+    def addFileButton(self, text):
+        fileButton = QFileButton(text, self)
+        self.setCornerWidget(fileButton, corner=Qt.TopLeftCorner)
 
-    _height = pyqtProperty(int, fset=_set_height)
+        return fileButton
 
 
 class QTab(QBaseWidget):

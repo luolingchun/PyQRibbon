@@ -43,7 +43,6 @@ class QRibbonWindow(FramelessWindow):
         self.minButton.installEventFilter(self)
         self.maxButton.installEventFilter(self)
         self.closeButton.installEventFilter(self)
-        self.fileButton.installEventFilter(self)
         # 最小化、最大化、关闭按钮事件
         self.minButton.clicked.connect(self.showMinimized)
         self.maxButton.clicked.connect(self.toggle_max)
@@ -56,6 +55,12 @@ class QRibbonWindow(FramelessWindow):
     def addRightWidget(self, widget: QWidget):
         """在标题栏右侧添加控件"""
         self.ribbonWidget.titleWidget.addRightWidget(widget)
+
+    def addFileButton(self, text='文件'):
+        fileButton = self.ribbonWidget.tabPanel.addFileButton(text)
+        fileButton.installEventFilter(self)
+
+        return fileButton
 
     @property
     def title(self):

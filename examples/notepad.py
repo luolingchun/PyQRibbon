@@ -4,7 +4,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QToolButton, QPushButton, QAction, QSizePolicy, QLabel, \
-    QMenu, QDockWidget, QHBoxLayout, QTextEdit
+    QMenu, QHBoxLayout, QTextEdit
 
 from PyQRibbon import QRibbonWindow
 
@@ -24,7 +24,8 @@ class Notepad(QRibbonWindow):
         self.addRightWidget(QPushButton(QIcon("./images/smile.png"), ''))
 
         # 文件按钮点击事件
-        self.fileButton.clicked.connect(lambda: print('file clicked'))
+        fileButton = self.addFileButton("文件")
+        fileButton.clicked.connect(lambda: print('file clicked'))
 
         # 添加标签
         tab = self.addTab("开始")
