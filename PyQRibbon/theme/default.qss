@@ -1,3 +1,7 @@
+FramelessWindow{
+    border: 1px solid gray;
+}
+
 QRibbonWindow{
     background-color: white;
 }
