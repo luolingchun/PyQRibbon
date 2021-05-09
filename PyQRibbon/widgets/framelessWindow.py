@@ -4,7 +4,7 @@
 # @File    : framelessWindow.py
 
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal
-from PyQt5.QtGui import QEnterEvent, QPainter, QPen, QColor
+from PyQt5.QtGui import QEnterEvent
 from PyQt5.QtWidgets import QMainWindow
 
 
@@ -201,8 +201,6 @@ class FramelessWindow(QMainWindow):
                                   range(height - margin, height)]
         self.top_left_rect = [QPoint(x, y) for x in range(0, margin) for y in range(0, margin)]
         self.top_right_rect = [QPoint(x, y) for x in range(width - margin, width) for y in range(0, margin)]
-
-        self._rect = self.top_rect + self.bottom_rect + self.left_rect + self.right_rect + self.bottom_left_rect + self.bottom_right_rect
 
     def resizeEvent(self, event) -> None:
         super(FramelessWindow, self).resizeEvent(event)

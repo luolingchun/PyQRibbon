@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : llc
 # @Time    : 2021/4/10 16:36
-from PyQt5.QtCore import Qt, pyqtProperty
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QSizePolicy, QTabWidget, QFrame, QSpacerItem
 
 from PyQRibbon.utils import create_layout
