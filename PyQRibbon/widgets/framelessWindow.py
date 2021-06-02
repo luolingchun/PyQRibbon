@@ -4,13 +4,14 @@
 # @File    : framelessWindow.py
 
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal
-from PyQt5.QtGui import QEnterEvent
+from PyQt5.QtGui import QEnterEvent, QPainter, QPen, QColor, QLinearGradient
 from PyQt5.QtWidgets import QMainWindow
 
 
 class FramelessWindow(QMainWindow):
     resized = pyqtSignal()
-    margin = 3
+    margin = 6
+    default = ""
 
     def __init__(self, parent=None):
         super(FramelessWindow, self).__init__(parent)
@@ -37,7 +38,7 @@ class FramelessWindow(QMainWindow):
         self.top_left_rect = []
         self.top_right_rect = []
         self.setMouseTracking(True)
-        # self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowFlags(Qt.Dialog |
                             Qt.FramelessWindowHint |
                             Qt.WindowSystemMenuHint |
@@ -216,21 +217,56 @@ class FramelessWindow(QMainWindow):
 
         return super(FramelessWindow, self).eventFilter(obj, event)
 
-    # def paintEvent(self, event):
-    #     super(FramelessWindow, self).paintEvent(event)
-    #     if self.isMaximized():
-    #         # 绘制透明度为2*margin的难以发现的边框
-    #         painter = QPainter(self)
-    #         painter.setPen(QPen(QColor(255, 255, 255, 255), 2 * self.margin))
-    #         painter.drawRect(self.rect())
-    #         # 绘制1像素黑边
-    #         painter.setPen(QPen(QColor(255, 255, 255, 255), 1))
-    #         painter.drawRect(3, 3, self.width() - 6, self.height() - 6)
-    #     else:
-    #         # 绘制透明度为2*margin的难以发现的边框
-    #         painter = QPainter(self)
-    #         painter.setPen(QPen(QColor(0, 255, 0, 2), 2 * self.margin))
-    #         painter.drawRect(self.rect())
-    #         # 绘制1像素黑边
-    #         painter.setPen(QPen(QColor(0, 0, 0, 255), 1))
-    #         painter.drawRect(3, 3, self.width() - 6, self.height() - 6)
+    def paintEvent(self, event):
+        super(FramelessWindow, self).paintEvent(event)
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        color1 = QColor(255, 255, 255, 2)
+        color2 = QColor(0, 0, 0, 4)
+        if self.isMaximized():
+            # print(self.default)
+            self.setStyleSheet(self.default.replace("{{margin}}", "0"))
+        else:
+            self.setStyleSheet(self.default.replace("{{margin}}", str(self.margin)))
+            # 上
+            painter.save()
+            linearGradient = QLinearGradient(0, 0, 0, self.margin)
+            linearGradient.setColorAt(0, color1)
+            linearGradient.setColorAt(1, color2)
+            painter.setBrush(linearGradient)
+            painter.setPen(Qt.transparent)
+            painter.drawRect(0, 0, self.width() - self.margin, self.margin)
+            painter.restore()
+            # 下
+            painter.save()
+            linearGradient = QLinearGradient(0, self.height() - self.margin, 0, self.height())
+            linearGradient.setColorAt(0, color2)
+            linearGradient.setColorAt(1, color1)
+            painter.setBrush(linearGradient)
+            painter.setPen(Qt.transparent)
+            painter.drawRect(0, self.height() - self.margin, self.width(), self.height())
+            painter.restore()
+            # 左
+            painter.save()
+            linearGradient = QLinearGradient(0, 0, self.margin, 0)
+            linearGradient.setColorAt(0, color1)
+            linearGradient.setColorAt(1, color2)
+            painter.setBrush(linearGradient)
+            painter.setPen(Qt.transparent)
+            painter.drawRect(0, 0, self.margin, self.height())
+            painter.restore()
+            # 右
+            painter.save()
+            linearGradient = QLinearGradient(self.width() - self.margin, 0, self.width(), 0)
+            linearGradient.setColorAt(0, color2)
+            linearGradient.setColorAt(1, color1)
+            painter.setBrush(linearGradient)
+            painter.setPen(Qt.transparent)
+            painter.drawRect(self.width() - self.margin, 0, self.width(), self.height())
+            painter.restore()
+        # 绘制1像素黑边
+        painter.save()
+        painter.setPen(QPen(QColor(131, 131, 131), 1))
+        painter.drawRect(self.margin - 1, self.margin - 1, self.width() - 2 * self.margin + 2,
+                         self.height() - 2 * self.margin + 2)
+        painter.restore()

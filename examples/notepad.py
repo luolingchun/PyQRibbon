@@ -18,7 +18,9 @@ class Notepad(QRibbonWindow):
         self.title = "记事本"
 
         # 左侧添加按钮
-        self.addLeftWidget(QPushButton(QIcon('images/save.png'), ''))
+        saveBtn = QPushButton(QIcon('images/save.png'), '')
+        self.addLeftWidget(saveBtn)
+        saveBtn.setMouseTracking(True)
 
         # 右侧添加按钮
         self.addRightWidget(QPushButton(QIcon("./images/smile.png"), ''))

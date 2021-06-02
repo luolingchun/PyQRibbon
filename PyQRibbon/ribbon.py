@@ -19,8 +19,10 @@ class QRibbonWindow(FramelessWindow):
         self.groups = []
 
         # 设置样式
+        self.default = default
         if self.style == 'default':
-            self.setStyleSheet(default + '\n' + self.styleSheet())
+            _default = default.replace("{{margin}}", str(self.margin))
+            self.setStyleSheet(_default + '\n' + self.styleSheet())
         # 去除右键菜单
         self.setContextMenuPolicy(Qt.NoContextMenu)
         # 添加工具栏

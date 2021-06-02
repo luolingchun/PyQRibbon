@@ -8,9 +8,9 @@ QRibbonWindow{
 /*中心控件*/
 #centralWidget{
 	background-color: white;
-	margin-left: 2px;
-	margin-right: 2px;
-	margin-bottom: 2px;
+	margin-left: {{margin}}px;
+	margin-right: {{margin}}px;
+	margin-bottom: {{margin}}px;
 }
 /*整个ribbon组件*/
 QRibbonWidget{
@@ -76,9 +76,9 @@ QTabPanel:pane{
 /*工具栏*/
 QToolBar{
 	border: 1px;
-	margin-top: 2px;
-	margin-left: 2px;
-	margin-right: 2px;
+	margin-top: {{margin}}px;
+	margin-left: {{margin}}px;
+	margin-right: {{margin}}px;
 	spacing: 1px;
 	background-color: white;
 }
