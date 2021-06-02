@@ -1,2 +1,1 @@
 PyQt5
-QScintilla
