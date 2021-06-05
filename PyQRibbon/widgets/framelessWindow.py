@@ -267,6 +267,6 @@ class FramelessWindow(QMainWindow):
         # 绘制1像素黑边
         painter.save()
         painter.setPen(QPen(QColor(131, 131, 131), 1))
-        painter.drawRect(self.margin - 1, self.margin - 1, self.width() - 2 * self.margin + 2,
-                         self.height() - 2 * self.margin + 2)
+        painter.drawRect(self.margin, self.margin, self.width() - 2 * self.margin,
+                         self.height() - 2 * self.margin)
         painter.restore()

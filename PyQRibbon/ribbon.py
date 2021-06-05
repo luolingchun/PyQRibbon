@@ -52,14 +52,17 @@ class QRibbonWindow(FramelessWindow):
 
     def addLeftWidget(self, widget: QWidget):
         """在标题栏左侧添加控件"""
+        widget.setMouseTracking(True)
         self.ribbonWidget.titleWidget.addLeftWidget(widget)
 
     def addRightWidget(self, widget: QWidget):
         """在标题栏右侧添加控件"""
+        widget.setMouseTracking(True)
         self.ribbonWidget.titleWidget.addRightWidget(widget)
 
     def addFileButton(self, text='文件'):
         fileButton = self.ribbonWidget.tabPanel.addFileButton(text)
+        fileButton.setMouseTracking(True)
         fileButton.installEventFilter(self)
 
         return fileButton
