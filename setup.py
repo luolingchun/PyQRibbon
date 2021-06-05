@@ -5,7 +5,7 @@
 
 from setuptools import setup
 
-__version__ = 'v0.9.3'
+__version__ = 'v0.9.4'
 
 long_description = """
 PyQRibbon是一个实现了ribbon菜单的控件
