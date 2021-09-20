@@ -206,6 +206,10 @@ class FramelessWindow(QMainWindow):
     def resizeEvent(self, event) -> None:
         super(FramelessWindow, self).resizeEvent(event)
         self.calc_rect()
+        if self.isMaximized():
+            self.setStyleSheet(self.default.replace("{{margin}}", "0"))
+        else:
+            self.setStyleSheet(self.default.replace("{{margin}}", str(self.margin)))
         self.resized.emit()
 
     def eventFilter(self, obj, event):
@@ -223,11 +227,7 @@ class FramelessWindow(QMainWindow):
         painter.setRenderHint(QPainter.Antialiasing, True)
         color1 = QColor(255, 255, 255, 2)
         color2 = QColor(0, 0, 0, 4)
-        if self.isMaximized():
-            # print(self.default)
-            self.setStyleSheet(self.default.replace("{{margin}}", "0"))
-        else:
-            self.setStyleSheet(self.default.replace("{{margin}}", str(self.margin)))
+        if not self.isMaximized():
             # 上
             painter.save()
             linearGradient = QLinearGradient(0, 0, 0, self.margin)
