@@ -10,4 +10,4 @@ pip install PyQRibbon
 
 ## 截图
 
-![](./screen/1.png)
+![screen](https://raw.githubusercontent.com/luolingchun/PyQRibbon/master/screen/1.png)
