@@ -5,7 +5,7 @@
 
 from setuptools import setup
 
-__version__ = 'v0.9.6'
+__version__ = 'v0.9.7'
 
 long_description = open('README.md', 'r', encoding='utf-8').read()
 
