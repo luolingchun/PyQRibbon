@@ -2,8 +2,10 @@
 # @Author  : llc
 # @Time    : 2021/4/10 16:36
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QSizePolicy, QTabWidget, QFrame, QSpacerItem
 
+from PyQRibbon.theme import foldIcon, fixedIcon
 from PyQRibbon.utils import create_layout
 
 
@@ -102,16 +104,65 @@ class QTitleWidget(QBaseWidget):
 class QTabPanel(QTabWidget):
     def __init__(self, parent=None):
         super(QTabPanel, self).__init__(parent)
+        self.isFold = False
 
         self.setMouseTracking(True)
 
-        self.currentChanged.connect(lambda: self.setStyleSheet(""))
+        self.currentChanged.connect(self.updateStyleSheet)
+        # 折叠按钮
+        self.foldButton = QPushButton(QIcon(foldIcon), '')
+        self.foldButton.setStyleSheet("""
+                border:0px;
+                width:25px;
+                height:15px;
+            """)
+        self.foldButton.clicked.connect(self.foldButtonClicked)
+        self.setCornerWidget(self.foldButton, corner=Qt.TopRightCorner)
+        # tab单击事件
+        self.tabBarClicked.connect(self.tabBarUpdate)
 
     def addFileButton(self, text):
         fileButton = QFileButton(text, self)
         self.setCornerWidget(fileButton, corner=Qt.TopLeftCorner)
 
         return fileButton
+
+    def updateStyleSheet(self):
+        self.setStyleSheet("")
+        self.isFold = False
+        self.foldButton.setIcon(QIcon(foldIcon))
+
+    def foldButtonClicked(self):
+        if not self.isFold:
+            self.foldButton.setIcon(QIcon(fixedIcon))
+            self.setStyleSheet("""
+                    QTabPanel {
+                        min-height: 30px;
+                        max-height: 30px;
+                    }
+                    QTabPanel  QTabBar::tab:selected{
+                        border-left: 0px;
+                        border-top: 0px;
+                        border-right: 0px;
+                        color: rgb(43, 87, 154);
+                    }
+                    QTabPanel:pane{
+                        top: 0px;
+                        border-top: 0px;
+                        border-bottom: 0px;
+                        background-color: rgb(255, 255, 255);
+                    }
+                    """)
+        else:
+            self.foldButton.setIcon(QIcon(foldIcon))
+            self.setStyleSheet("")
+        self.isFold = not self.isFold
+
+    def tabBarUpdate(self, index):
+        if index == self.currentIndex():
+            self.setStyleSheet("")
+            self.isFold = False
+            self.foldButton.setIcon(QIcon(foldIcon))
 
 
 class QTab(QBaseWidget):
