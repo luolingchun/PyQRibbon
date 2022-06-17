@@ -72,6 +72,11 @@ class Notepad(QRibbonWindow):
         tab = self.addTab('插入')
         tab.addGroup('设计', QLabel("在这里添加一个控件..."))
 
+        # 添加第三个标签
+        tab = self.addTab('帮助')
+        tab.addGroup(widget=QLabel(" 标签 "), line=True)
+        tab.addGroup(widget=QPushButton(" 按钮 "), line=False)
+
         # 添加写字板
         self.horizontalLayout = QHBoxLayout(self.centralWidget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")

@@ -178,17 +178,18 @@ class QTab(QBaseWidget):
         horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.__layout.addItem(horizontalSpacer)
 
-    def addGroup(self, name, widget, corner=False, cornerCallback=None):
+    def addGroup(self, name=None, widget=None, corner=False, cornerCallback=None, line=True):
         group = QGroup(name, widget, corner, cornerCallback, self)
         # 控件个数
         count = self.__layout.count()
         self.__layout.insertWidget(count - 1, group)
-        # 添加竖线
-        line = QFrame(self)
-        line.setObjectName("Line")
-        line.setFrameShape(QFrame.VLine)
-        line.setFrameShadow(QFrame.Raised)
-        self.__layout.insertWidget(count, line)
+        if line:
+            # 添加竖线
+            line = QFrame(self)
+            line.setObjectName("Line")
+            line.setFrameShape(QFrame.VLine)
+            line.setFrameShadow(QFrame.Raised)
+            self.__layout.insertWidget(count, line)
         return group
 
 
@@ -219,20 +220,21 @@ class QGroup(QBaseWidget):
         hl = create_layout(direction='h')
         horizontalSpacerL = QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum)
         hl.addItem(horizontalSpacerL)
-        label = QLabel(self.name, self)
-        label.setObjectName("GroupLabel")
-        hl.addWidget(label)
+        if self.name:
+            label = QLabel(self.name, self)
+            label.setObjectName("GroupLabel")
+            hl.addWidget(label)
         horizontalSpacerR = QSpacerItem(1, 1, QSizePolicy.Expanding, QSizePolicy.Minimum)
         hl.addItem(horizontalSpacerR)
-        cornerButton = QPushButton('⟓', self)
-        cornerButton.setObjectName('cornerButton')
-        cornerButton.hide()
-        hl.addWidget(cornerButton)
-        vl.addLayout(hl)
         if self.corner:
+            cornerButton = QPushButton('⟓', self)
+            cornerButton.setObjectName('cornerButton')
+            cornerButton.hide()
+            hl.addWidget(cornerButton)
             cornerButton.show()
             if self.cornerCallback:
                 cornerButton.clicked.connect(self.cornerCallback)
+        vl.addLayout(hl)
 
 
 class QRibbonWidget(QFrame):
