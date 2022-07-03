@@ -2,16 +2,20 @@
 # @Time    : 2019/3/22 13:22
 # @Author  : llc
 # @File    : setup.py
+import os
+import re
 
 from setuptools import setup
 
-__version__ = 'v0.9.7'
-
 long_description = open('README.md', 'r', encoding='utf-8').read()
+
+version_file = os.path.join(os.path.dirname(__file__), 'PyQRibbon', '__version__.py')
+with open(version_file, 'r', encoding='utf-8') as f:
+    version = re.findall(r"__version__ = '(.*?)'", f.read())[0]
 
 setup(
     name="PyQRibbon",
-    version=__version__,
+    version=version,
     url='https://github.com/luolingchun/PyQRibbon',
     description='PyQRibbon',
     long_description=long_description,
